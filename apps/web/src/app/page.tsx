@@ -69,6 +69,9 @@ export default function Today() {
             <div className="mt-4 border-t border-line pt-3 text-[12px] text-ink-3">
               {t.source}: {latest.source} · {t.ago(latest.age_hours ?? 0)}
               {latest.readings?.pm10 && prefs.pollutant === "pm25" && <> · PM10 {num(prefs.lang, latest.readings.pm10.value)} µg/m³</>}
+              {latest.provider_location && latest.provider_distance_m != null && (
+                <div className="mt-1">{t.sensorAt(latest.provider_location, latest.provider_distance_m)}</div>)}
+              {latest.sensor_grade === "low_cost" && <div className="mt-1 text-warn">{t.lowCost}</div>}
             </div>
           </Card>
         )}

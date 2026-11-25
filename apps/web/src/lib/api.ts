@@ -39,6 +39,9 @@ export interface Latest {
   age_hours?: number;
   source?: string;
   is_live?: boolean;
+  provider_location?: string | null;
+  provider_distance_m?: number | null;
+  sensor_grade?: "reference" | "low_cost" | null;
   readings?: Partial<Record<Pollutant, Reading>>;
 }
 

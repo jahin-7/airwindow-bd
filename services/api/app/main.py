@@ -127,6 +127,7 @@ def latest(station_id: str):
     return {**base, "status": "ok" if fresh else "stale", "observed_at": last.ts.isoformat(),
             "age_hours": round(age_h, 1), "source": h.source, "is_live": h.is_live,
             "provider_location": h.provider_location, "provider_distance_m": h.distance_m,
+            "sensor_grade": h.sensor_grade,
             "readings": readings}
 
 

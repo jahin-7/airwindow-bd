@@ -28,6 +28,10 @@ class Strings(val bn: Boolean) {
     fun mean24(x: Double) = t("24-hour average ${n(x)} µg/m³", "২৪ ঘণ্টার গড় ${n(x)} µg/m³")
     fun staleSub(h: Double) = t("Last measurement was ${h.roundToInt()} hours ago. Forecasts are paused until new data arrives.",
         "শেষ পরিমাপ ${n(h.roundToInt())} ঘণ্টা আগে। নতুন তথ্য না আসা পর্যন্ত পূর্বাভাস বন্ধ।")
+    fun sensorAt(name: String, m: Double) = if (m < 1000) t("Sensor: $name · ${m.roundToInt()} m from station", "সেন্সর: $name · স্টেশন থেকে ${n(m.roundToInt())} মিটার")
+        else t("Sensor: $name · ${n(m / 1000, 1)} km from station", "সেন্সর: $name · স্টেশন থেকে ${n(m / 1000, 1)} কিমি")
+    val lowCost get() = t("Low-cost sensor. Readings can differ from the government reference monitors the forecast was trained on.",
+        "কম খরচের সেন্সর। পূর্বাভাস যে সরকারি রেফারেন্স মনিটরের তথ্যে প্রশিক্ষিত, তার সঙ্গে এর পাঠ ভিন্ন হতে পারে।")
     fun kmAway(k: Double) = t("${n(k, 1)} km away", "${n(k, 1)} কিমি দূরে")
 
     val now get() = t("Now", "এখন")

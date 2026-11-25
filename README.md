@@ -1,19 +1,19 @@
 # AirWindow BD
 
-**Choose a better time to be outdoors in Bangladesh, using measured air quality and short-term PM2.5 / PM10 forecasts.**
+An app that helps people in Bangladesh pick a better time to go outside, based on measured air quality and short-term PM2.5 / PM10 forecasts.
 
-AirWindow shows the latest measured PM2.5/PM10 near you, forecasts the next 1, 3 and 6 hours, and ranks those hours so you can pick a relatively lower-pollution time for a walk, exercise, a commute or the school run. It is bilingual (বাংলা / English), works without an account, and is honest about what it doesn't know: old data is labelled, missing data is shown as missing, and forecasts come with ranges.
+It shows the latest PM2.5/PM10 reading near you, forecasts the next 1, 3 and 6 hours, and ranks those hours so you can choose a lower-pollution time for a walk, exercise, a commute or the school run. It works in Bangla and English and doesn't need an account. I tried to keep it upfront about what it doesn't know: old data is labelled as old, missing data is shown as missing, and every forecast comes with a range.
 
-Three clients share one Python API and one set of trained models:
+There are three front ends, and they all use the same Python API and the same trained models:
 
-| Client | Stack | Where |
+| Part | Stack | Folder |
 |---|---|---|
-| Mobile web app (PWA) + desktop web | Next.js 15, TypeScript, Tailwind | `apps/web` |
-| Android app | Kotlin, Jetpack Compose (Material 3, One UI-style) | `apps/android` |
+| Web app (mobile + desktop) | Next.js 15, TypeScript, Tailwind | `apps/web` |
+| Android app | Kotlin, Jetpack Compose | `apps/android` |
 | API | Python, FastAPI | `services/api` |
-| Data + models | pandas, LightGBM, PyTorch | `ml/` |
+| Data and models | pandas, LightGBM, PyTorch | `ml/` |
 
-> ⚠️ AirWindow does not give medical advice and a lower forecast is not a guarantee of safe air. During severe pollution, follow official public-health advisories.
+Note: this isn't medical advice, and a lower forecast doesn't mean the air is safe. When pollution is severe, follow the official health advisories.
 
 ## Results
 
@@ -81,17 +81,15 @@ MAE/RMSE in µg/m³. n = 87,758 station-hours at +6 h.
 | PM10 | tgt_weather | 24.2 | 35.6 | 40.9 |
 
 
-**Reading these results honestly**
+**Notes on the results**
 
-- **Where it helps:** forecasting is most useful at **3–6 hours**, cutting error by about a third compared with "no change". At **1 hour the models are no better than the latest measurement** (served PM10 is marginally worse), so the app's value is in the next few hours, not the next one.
-- **Variant choice:** the served variant (weather at the target hour) was picked on the 2023 validation year, where it was slightly better. On the 2024 test year it is slightly *worse* than the simpler variant (PM2.5 6 h: 35.8 vs 34.8). We report this rather than switch after seeing test results. Both variants are within a few percent, and live weather *forecasts* are noisier than the ERA5 reanalysis used in training, so treat the target-weather rows as optimistic.
-- **Metric choice:** R² for PM2.5 is low (≈0.24) because a few extreme pollution spikes dominate squared error; MAE is the primary metric.
-- **GRU vs LightGBM:** the GRU, trained on a Kaggle T4 GPU, is on par with LightGBM: slightly better at 1 h, slightly worse at 6 h for PM2.5. The Apple M4 run reproduces it within about 1–2%, and the two LightGBM runs (Kaggle CPU and GPU sessions) agree within 0.02 µg/m³. LightGBM is served because it is smaller, faster and comes with calibrated intervals.
-- **Unseen stations:** models trained without a station still beat persistence there by 22–43% at 6 h, so the approach transfers to stations not seen in training.
-- **Reproducibility:** every number above is generated from `ml/artifacts/metrics.json` by `python -m airwindow.report`, and was independently re-computed from the saved raw test predictions (`test_predictions_lgb.parquet`) before publishing.
-- **Training runs:** both are generated from this repo's package source.
-  - Trees: Kaggle notebook (CPU), `ml/notebooks/airwindow_bd_trees_cpu.ipynb`.
-  - Trees + GRU: Kaggle notebook (GPU T4), `ml/notebooks/airwindow_bd_training.ipynb`.
+- The forecasts are most useful 3 to 6 hours ahead, where the error is about a third lower than just assuming nothing changes. One hour ahead, the models are basically no better than the latest reading (for PM10 the served model is even a little worse), so the app is really about the next few hours.
+- I picked the served variant (the one that also uses weather at the target hour) on the 2023 validation data, where it did slightly better. On the 2024 test data it came out slightly worse than the simpler variant (PM2.5 at 6 h: 35.8 vs 34.8). I left the choice as it was instead of switching after looking at the test results. The two are within a few percent of each other anyway. Training used ERA5 reanalysis for the "future" weather, which is more accurate than a real forecast, so treat those rows as a bit optimistic.
+- R² for PM2.5 looks low (about 0.24) because a few extreme pollution spikes dominate the squared error. MAE is the main metric.
+- The GRU (trained on a Kaggle T4 GPU) ends up about level with LightGBM: slightly better at 1 h, slightly worse at 6 h. I reran it on my Mac's M4 GPU and got the same numbers within 1–2%, and the two LightGBM runs agreed within 0.02 µg/m³. The app uses LightGBM because it is smaller and faster and gives calibrated ranges.
+- When a station is left out of training completely, the model still beats "no change" at that station by 22–43% at 6 h.
+- All the numbers above are generated from `ml/artifacts/metrics.json` with `python -m airwindow.report`. I also recomputed them from the saved test predictions to make sure they matched.
+- Kaggle notebooks: `ml/notebooks/airwindow_bd_trees_cpu.ipynb` (trees, CPU) and `ml/notebooks/airwindow_bd_training.ipynb` (trees + GRU, T4 GPU). Both are generated from the code in `ml/src`.
 
 <!-- RESULTS:END -->
 
@@ -100,9 +98,11 @@ MAE/RMSE in µg/m³. n = 87,758 station-hours at +6 h.
 - **Training:** [CAMS-BD](https://data.mendeley.com/datasets/hwmzyh5w4w/1) (doi:10.17632/hwmzyh5w4w.1, CC BY 4.0): hourly pollutant and weather records from Bangladesh Department of Environment Continuous Air Monitoring Stations, Nov 2012 – Jan 2025. It is **historical**; the app never shows it as current.
 - **Weather:** [Open-Meteo](https://open-meteo.com/) ERA5 archive (training) and forecast API (live).
 - **Live readings (optional):** [OpenAQ v3](https://docs.openaq.org/). Without a key, the app runs in a clearly labelled historical-replay demo mode.
+  - **Coverage (checked 25 Nov 2026):** 6 of 16 stations have an *active* OpenAQ PM2.5 sensor within 10 km: Dhaka BARC, Darussalam and DoE; Savar; Narayanganj (8 km away); and Khulna. The other 10 show "No current observation available for this area" rather than an estimate.
+  - **Sensor choice:** the nearest sensor with a reading in the last 6 hours is used, and reference monitors would be preferred. Every active sensor today is a **low-cost** AirGradient unit; the reference monitors (US Embassy, AirNow) stopped reporting in 2016 and 2025. The apps label these readings as low-cost, because the forecast models were trained on DoE reference monitors and low-cost sensors can read differently.
 - **AQI:** bands, names and colours from the DoE "AQI Scheme for Bangladesh" ([source PDF](docs/sources/DoE_daily_AQI_report_2026-06-05.pdf), p.2). DoE does not publish its µg/m³ breakpoints there, so concentrations are converted with the US EPA 2024 breakpoints (the bands are identical) on 24-hour means, and only when at least 18 of the last 24 hours were measured. WHO 2021 24-hour guideline: PM2.5 15 µg/m³, PM10 45 µg/m³.
 
-The source workbooks needed real repair work. The full report is in [`docs/DATA_QUALITY.md`](docs/DATA_QUALITY.md):
+The raw workbooks needed a fair amount of fixing before they were usable. The full report is in [`docs/DATA_QUALITY.md`](docs/DATA_QUALITY.md):
 
 - **Date repair:** in the 2012–2021 workbook, Excel had swapped day and month on every date with day ≤ 12. About 26.7k timestamps were recovered by decoding each station's hourly sequence. Seasonality checks confirm the fix: every year shows the expected winter peak and monsoon low.
 - **Savar columns:** the Savar block's header swaps solar radiation and pressure, so columns are mapped per block.
@@ -119,7 +119,7 @@ The source workbooks needed real repair work. The full report is in [`docs/DATA_
   - A GRU over the past 48 h, trained on a Kaggle T4 GPU and replicated on an Apple M4 GPU (MPS).
 - **Weather variants:** each model is trained with weather at issue time only, and with weather at the target hour. Target-hour weather uses ERA5 reanalysis as a stand-in for a weather forecast, so it is an **optimistic** upper bound.
 - **Station generalisation:** leave-one-station-out runs for five stations. Each is trained without that station and scored on its 2024 data.
-- **Reproducibility:** the Kaggle notebook (`ml/notebooks/airwindow_bd_training.ipynb`) is generated from the package source by `ml/notebooks/make_notebook.py`, so the notebook and the code can't drift apart.
+- The Kaggle notebooks are generated from the package code by `ml/notebooks/make_notebook.py`, so they always match what's in the repo.
 
 ## Run it
 

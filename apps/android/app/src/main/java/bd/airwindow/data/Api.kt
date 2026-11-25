@@ -41,6 +41,9 @@ data class Latest(
     val station: Station, val mode: String, val status: String, val message: String? = null,
     @SerialName("observed_at") val observedAt: String? = null, @SerialName("age_hours") val ageHours: Double? = null,
     val source: String? = null, @SerialName("is_live") val isLive: Boolean? = null,
+    @SerialName("provider_location") val providerLocation: String? = null,
+    @SerialName("provider_distance_m") val providerDistanceM: Double? = null,
+    @SerialName("sensor_grade") val sensorGrade: String? = null,
     val readings: Map<String, Reading> = emptyMap(),
 )
 

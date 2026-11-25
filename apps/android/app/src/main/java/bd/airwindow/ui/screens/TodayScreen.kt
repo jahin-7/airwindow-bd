@@ -75,7 +75,11 @@ fun TodayScreen(vm: AppViewModel, p: UserPrefs, s: Strings, openStations: () -> 
                 val v = l.value
                 if (v.status == "no_data") item { AwCard(tone = "warn") { Text(s.noData, fontWeight = FontWeight.SemiBold); Text(s.noDataSub, color = c.ink2, fontSize = 14.sp) } }
                 if (v.status == "stale") item { AwCard(tone = "warn") { Text(s.stale, fontWeight = FontWeight.SemiBold); Text(s.staleSub(v.ageHours ?: 0.0), color = c.ink2, fontSize = 14.sp) } }
-                v.readings[p.pollutant]?.let { r -> item { MeasuredCard(r, p, s, v.source ?: "", v.ageHours ?: 0.0, v.readings["pm10"]?.value) } }
+                v.readings[p.pollutant]?.let { r -> item { MeasuredCard(r, p, s, v.source ?: "", v.ageHours ?: 0.0, v.readings["pm10"]?.value) {
+                    if (v.providerLocation != null && v.providerDistanceM != null)
+                        Text(s.sensorAt(v.providerLocation, v.providerDistanceM), fontSize = 12.sp, color = LocalAw.current.ink3)
+                    if (v.sensorGrade == "low_cost") Text(s.lowCost, fontSize = 12.sp, color = LocalAw.current.warn)
+                } } }
             }
             Load.Loading -> item { AwCard { Box(Modifier.height(160.dp)) } }
         }
@@ -109,7 +113,7 @@ fun TodayScreen(vm: AppViewModel, p: UserPrefs, s: Strings, openStations: () -> 
 }
 
 @Composable
-private fun MeasuredCard(r: Reading, p: UserPrefs, s: Strings, source: String, ageH: Double, pm10: Double?) {
+private fun MeasuredCard(r: Reading, p: UserPrefs, s: Strings, source: String, ageH: Double, pm10: Double?, footer: @Composable () -> Unit = {}) {
     val c = LocalAw.current
     AwCard {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -140,5 +144,6 @@ private fun MeasuredCard(r: Reading, p: UserPrefs, s: Strings, source: String, a
         Spacer(Modifier.height(8.dp))
         Text("${s.source}: $source · ${s.ago(ageH)}${if (pm10 != null && p.pollutant == "pm25") " · PM10 ${s.n(pm10)} µg/m³" else ""}",
             fontSize = 12.sp, color = c.ink3)
+        footer()
     }
 }

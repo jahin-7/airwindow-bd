@@ -75,6 +75,8 @@ const en = {
   retry: "Try again",
   loading: "Loading…",
   errorGeneric: "Couldn't reach the AirWindow server.",
+  sensorAt: (name: string, m: number) => `Sensor: ${name} · ${m < 1000 ? `${m} m` : `${(m / 1000).toFixed(1)} km`} from station`,
+  lowCost: "Low-cost sensor. Readings can differ from the government reference monitors the forecast was trained on.",
 };
 
 export type Dict = typeof en;
@@ -154,6 +156,8 @@ const bn: Dict = {
   retry: "আবার চেষ্টা করুন",
   loading: "লোড হচ্ছে…",
   errorGeneric: "এয়ারউইন্ডো সার্ভারে পৌঁছানো যায়নি।",
+  sensorAt: (name: string, m: number) => `সেন্সর: ${name} · স্টেশন থেকে ${m < 1000 ? `${toBn(m)} মিটার` : `${toBn((m / 1000).toFixed(1))} কিমি`}`,
+  lowCost: "কম খরচের সেন্সর। পূর্বাভাস যে সরকারি রেফারেন্স মনিটরের তথ্যে প্রশিক্ষিত, তার সঙ্গে এর পাঠ ভিন্ন হতে পারে।",
 };
 
 const BN_DIGITS = "০১২৩৪৫৬৭৮৯";
