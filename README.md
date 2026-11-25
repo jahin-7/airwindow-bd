@@ -29,8 +29,8 @@ Three clients share one Python API and one set of trained models:
 | Seasonal naive (same hour yesterday) | 48.3 | 48.2 | 48.2 | 130.6 | -0.258 | 7% | – |
 | LightGBM, weather at issue time | 24.3 | 31.2 | 34.8 | 104.8 | 0.241 | 35% | 0.78 / 0.79 / 0.79 |
 | LightGBM, + target-hour weather (ERA5 proxy) **(served)** | 25.0 | 32.0 | 35.8 | 104.8 | 0.241 | 33% | 0.78 / 0.78 / 0.78 |
-| GRU, weather at issue time | 24.2 | 31.7 | 35.2 | 106.6 | 0.214 | 34% | – |
-| GRU, + target-hour weather (ERA5 proxy) | 24.3 | 32.0 | 36.1 | 107.7 | 0.197 | 33% | – |
+| GRU (Kaggle T4), weather at issue time | 24.1 | 31.6 | 35.3 | 106.8 | 0.210 | 34% | – |
+| GRU (Kaggle T4), + target-hour weather (ERA5 proxy) | 24.2 | 31.7 | 36.0 | 107.5 | 0.200 | 33% | – |
 
 MAE/RMSE in µg/m³. n = 106,184 station-hours at +6 h.
 
@@ -42,10 +42,19 @@ MAE/RMSE in µg/m³. n = 106,184 station-hours at +6 h.
 | Seasonal naive (same hour yesterday) | 57.8 | 57.8 | 57.9 | 115.0 | 0.251 | 16% | – |
 | LightGBM, weather at issue time | 26.1 | 38.2 | 43.4 | 86.5 | 0.580 | 37% | 0.80 / 0.80 / 0.81 |
 | LightGBM, + target-hour weather (ERA5 proxy) **(served)** | 26.9 | 39.4 | 44.9 | 87.0 | 0.574 | 34% | 0.81 / 0.81 / 0.80 |
-| GRU, weather at issue time | 25.3 | 38.1 | 43.2 | 89.5 | 0.549 | 37% | – |
-| GRU, + target-hour weather (ERA5 proxy) | 25.6 | 39.2 | 44.8 | 93.4 | 0.510 | 35% | – |
+| GRU (Kaggle T4), weather at issue time | 25.2 | 38.2 | 43.5 | 90.6 | 0.538 | 37% | – |
+| GRU (Kaggle T4), + target-hour weather (ERA5 proxy) | 25.4 | 38.4 | 44.3 | 92.6 | 0.519 | 35% | – |
 
 MAE/RMSE in µg/m³. n = 87,758 station-hours at +6 h.
+
+### GRU replication (same code and test rows, different hardware)
+
+| Model | Pollutant | Kaggle T4 MAE +1/+3/+6 h | Apple M4 MAE +1/+3/+6 h |
+|---|---|---|---|
+| gru_now_weather | PM2.5 | 24.1 / 31.6 / 35.3 | 24.2 / 31.7 / 35.2 |
+| gru_now_weather | PM10 | 25.2 / 38.2 / 43.5 | 25.3 / 38.1 / 43.2 |
+| gru_tgt_weather | PM2.5 | 24.2 / 31.7 / 36.0 | 24.3 / 32.0 / 36.1 |
+| gru_tgt_weather | PM10 | 25.4 / 38.4 / 44.3 | 25.6 / 39.2 / 44.8 |
 
 ### Unseen-station test (station left out of training, scored on its 2024 data)
 
@@ -77,12 +86,12 @@ MAE/RMSE in µg/m³. n = 87,758 station-hours at +6 h.
 - **Where it helps:** forecasting is most useful at **3–6 hours**, cutting error by about a third compared with "no change". At **1 hour the models are no better than the latest measurement** (served PM10 is marginally worse), so the app's value is in the next few hours, not the next one.
 - **Variant choice:** the served variant (weather at the target hour) was picked on the 2023 validation year, where it was slightly better. On the 2024 test year it is slightly *worse* than the simpler variant (PM2.5 6 h: 35.8 vs 34.8). We report this rather than switch after seeing test results. Both variants are within a few percent, and live weather *forecasts* are noisier than the ERA5 reanalysis used in training, so treat the target-weather rows as optimistic.
 - **Metric choice:** R² for PM2.5 is low (≈0.24) because a few extreme pollution spikes dominate squared error; MAE is the primary metric.
-- **GRU vs LightGBM:** the GRU (Apple M4 GPU) is on par with LightGBM: slightly better at 1 h, slightly worse at 6 h for PM2.5. It is scored on the same test rows, minus 182 of 587k that lack the 48 h of history it needs. LightGBM is served because it is smaller, faster and comes with calibrated intervals.
+- **GRU vs LightGBM:** the GRU, trained on a Kaggle T4 GPU, is on par with LightGBM: slightly better at 1 h, slightly worse at 6 h for PM2.5. The Apple M4 run reproduces it within about 1–2%, and the two LightGBM runs (Kaggle CPU and GPU sessions) agree within 0.02 µg/m³. LightGBM is served because it is smaller, faster and comes with calibrated intervals.
 - **Unseen stations:** models trained without a station still beat persistence there by 22–43% at 6 h, so the approach transfers to stations not seen in training.
 - **Reproducibility:** every number above is generated from `ml/artifacts/metrics.json` by `python -m airwindow.report`, and was independently re-computed from the saved raw test predictions (`test_predictions_lgb.parquet`) before publishing.
-- **Training runs:**
-  - Trees: [Kaggle notebook (CPU)](https://www.kaggle.com/code/rashidazraf/airwindow-bd-trees-cpu), with the same code as `ml/notebooks/airwindow_bd_trees_cpu.ipynb`.
-  - GRU: `python -m airwindow.run_gru` on Apple MPS.
+- **Training runs:** both are generated from this repo's package source.
+  - Trees: Kaggle notebook (CPU), `ml/notebooks/airwindow_bd_trees_cpu.ipynb`.
+  - Trees + GRU: Kaggle notebook (GPU T4), `ml/notebooks/airwindow_bd_training.ipynb`.
 
 <!-- RESULTS:END -->
 
@@ -107,7 +116,7 @@ The source workbooks needed real repair work. The full report is in [`docs/DATA_
 - **Models:**
   - Baselines: persistence and seasonal-naive (same hour yesterday).
   - LightGBM on log-PM, plus q10/q90 quantile models widened by a split-conformal offset from validation, giving a nominal 80% interval.
-  - A GRU over the past 48 h. It was trained on an Apple M4 GPU (MPS) because the Kaggle T4 queue stalled.
+  - A GRU over the past 48 h, trained on a Kaggle T4 GPU and replicated on an Apple M4 GPU (MPS).
 - **Weather variants:** each model is trained with weather at issue time only, and with weather at the target hour. Target-hour weather uses ERA5 reanalysis as a stand-in for a weather forecast, so it is an **optimistic** upper bound.
 - **Station generalisation:** leave-one-station-out runs for five stations. Each is trained without that station and scored on its 2024 data.
 - **Reproducibility:** the Kaggle notebook (`ml/notebooks/airwindow_bd_training.ipynb`) is generated from the package source by `ml/notebooks/make_notebook.py`, so the notebook and the code can't drift apart.

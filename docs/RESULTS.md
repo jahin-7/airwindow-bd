@@ -9,8 +9,8 @@
 | Seasonal naive (same hour yesterday) | 48.3 | 48.2 | 48.2 | 130.6 | -0.258 | 7% | – |
 | LightGBM, weather at issue time | 24.3 | 31.2 | 34.8 | 104.8 | 0.241 | 35% | 0.78 / 0.79 / 0.79 |
 | LightGBM, + target-hour weather (ERA5 proxy) **(served)** | 25.0 | 32.0 | 35.8 | 104.8 | 0.241 | 33% | 0.78 / 0.78 / 0.78 |
-| GRU, weather at issue time | 24.2 | 31.7 | 35.2 | 106.6 | 0.214 | 34% | – |
-| GRU, + target-hour weather (ERA5 proxy) | 24.3 | 32.0 | 36.1 | 107.7 | 0.197 | 33% | – |
+| GRU (Kaggle T4), weather at issue time | 24.1 | 31.6 | 35.3 | 106.8 | 0.210 | 34% | – |
+| GRU (Kaggle T4), + target-hour weather (ERA5 proxy) | 24.2 | 31.7 | 36.0 | 107.5 | 0.200 | 33% | – |
 
 MAE/RMSE in µg/m³. n = 106,184 station-hours at +6 h.
 
@@ -22,10 +22,19 @@ MAE/RMSE in µg/m³. n = 106,184 station-hours at +6 h.
 | Seasonal naive (same hour yesterday) | 57.8 | 57.8 | 57.9 | 115.0 | 0.251 | 16% | – |
 | LightGBM, weather at issue time | 26.1 | 38.2 | 43.4 | 86.5 | 0.580 | 37% | 0.80 / 0.80 / 0.81 |
 | LightGBM, + target-hour weather (ERA5 proxy) **(served)** | 26.9 | 39.4 | 44.9 | 87.0 | 0.574 | 34% | 0.81 / 0.81 / 0.80 |
-| GRU, weather at issue time | 25.3 | 38.1 | 43.2 | 89.5 | 0.549 | 37% | – |
-| GRU, + target-hour weather (ERA5 proxy) | 25.6 | 39.2 | 44.8 | 93.4 | 0.510 | 35% | – |
+| GRU (Kaggle T4), weather at issue time | 25.2 | 38.2 | 43.5 | 90.6 | 0.538 | 37% | – |
+| GRU (Kaggle T4), + target-hour weather (ERA5 proxy) | 25.4 | 38.4 | 44.3 | 92.6 | 0.519 | 35% | – |
 
 MAE/RMSE in µg/m³. n = 87,758 station-hours at +6 h.
+
+### GRU replication (same code and test rows, different hardware)
+
+| Model | Pollutant | Kaggle T4 MAE +1/+3/+6 h | Apple M4 MAE +1/+3/+6 h |
+|---|---|---|---|
+| gru_now_weather | PM2.5 | 24.1 / 31.6 / 35.3 | 24.2 / 31.7 / 35.2 |
+| gru_now_weather | PM10 | 25.2 / 38.2 / 43.5 | 25.3 / 38.1 / 43.2 |
+| gru_tgt_weather | PM2.5 | 24.2 / 31.7 / 36.0 | 24.3 / 32.0 / 36.1 |
+| gru_tgt_weather | PM10 | 25.4 / 38.4 / 44.3 | 25.6 / 39.2 / 44.8 |
 
 ### Unseen-station test (station left out of training, scored on its 2024 data)
 

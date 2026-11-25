@@ -13,8 +13,8 @@ NAMES = {
     "seasonal_naive_24h": "Seasonal naive (same hour yesterday)",
     "lightgbm_now_weather": "LightGBM, weather at issue time",
     "lightgbm_tgt_weather": "LightGBM, + target-hour weather (ERA5 proxy)",
-    "gru_now_weather": "GRU, weather at issue time",
-    "gru_tgt_weather": "GRU, + target-hour weather (ERA5 proxy)",
+    "gru_now_weather": "GRU (Kaggle T4), weather at issue time",
+    "gru_tgt_weather": "GRU (Kaggle T4), + target-hour weather (ERA5 proxy)",
 }
 POL = {"pm25": "PM2.5", "pm10": "PM10"}
 
@@ -65,6 +65,17 @@ def tables(m: dict) -> str:
                        f"{_f(r[6]['rmse'])} | {_f(r[6]['r2'], 3)} | {_f(100 * r[6].get('skill_vs_persistence', 0), 0)}% | {cov} |")
         n = next((x["n"] for x in rows if x["pollutant"] == pol and x["model"] == "persistence" and x["horizon"] == 6), None)
         out += ["", f"MAE/RMSE in µg/m³. n = {n:,} station-hours at +6 h." if n else "", ""]
+    rep = m.get("gru_replication_apple_m4")
+    if rep:
+        t4 = {(x["pollutant"], x["horizon"], x["model"]): x["mae"] for x in m["gru"]}
+        out += ["### GRU replication (same code and test rows, different hardware)", "",
+                "| Model | Pollutant | Kaggle T4 MAE +1/+3/+6 h | Apple M4 MAE +1/+3/+6 h |", "|---|---|---|---|"]
+        for key in ("gru_now_weather", "gru_tgt_weather"):
+            for pol in ("pm25", "pm10"):
+                a = " / ".join(_f(t4[(pol, h, key)]) for h in (1, 3, 6))
+                b = " / ".join(_f(next(x["mae"] for x in rep if x["pollutant"] == pol and x["horizon"] == h and x["model"] == key)) for h in (1, 3, 6))
+                out.append(f"| {key} | {POL[pol]} | {a} | {b} |")
+        out.append("")
     if m.get("leave_station_out"):
         out += ["### Unseen-station test (station left out of training, scored on its 2024 data)", "",
                 "| Held-out station | Pollutant | +1 h MAE | +3 h MAE | +6 h MAE | +6 h skill vs persistence |",
