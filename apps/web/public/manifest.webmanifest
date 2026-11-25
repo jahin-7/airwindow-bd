@@ -1,0 +1,10 @@
+{
+  "name": "AirWindow BD",
+  "short_name": "AirWindow",
+  "description": "Plan outdoor time around measured air quality and short-term PM forecasts.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f4f6",
+  "theme_color": "#f4f4f6",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

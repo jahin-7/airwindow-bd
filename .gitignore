@@ -1,0 +1,21 @@
+# data: raw source is downloaded by build_dataset; processed files are large
+data/raw/
+data/interim/
+data/processed/
+data/kaggle_upload/*.parquet
+# envs / secrets
+.venv/
+**/.env
+!**/.env.example
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+# node
+apps/web/node_modules/
+apps/web/.next/
+apps/web/next-env.d.ts
+# large model outputs (keep metrics, model cards and small boosters)
+ml/artifacts/**/*.parquet
+ml/artifacts/**/*.pt
+.DS_Store

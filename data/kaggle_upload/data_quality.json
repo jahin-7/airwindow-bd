@@ -1,0 +1,1014 @@
+{
+ "parse": {
+  "rows_in": 1373990,
+  "rows_out": 0,
+  "dropped": {
+   "unparseable_timestamp": 8794,
+   "no_date_column_khulna": 80352,
+   "no_date_column_narsingdi": 17543,
+   "no_date_column_rajshahi": 88843,
+   "no_date_column_rangpur": 17544,
+   "no_date_column_dhk_sangsad": 58392,
+   "unit_rows": 44
+  },
+  "notes": [
+   "2012-2021 Khulna: block has no dates (80352 rows); excluded, not reconstructed.",
+   "2012-2021 Narsingdi: block has no dates (17543 rows); excluded, not reconstructed.",
+   "2012-2021 Rajshahi: block has no dates (88843 rows); excluded, not reconstructed.",
+   "2012-2021 Rangpur: block has no dates (17544 rows); excluded, not reconstructed.",
+   "2012-2021 Sangsad: block has no dates (58392 rows); excluded, not reconstructed."
+  ],
+  "unit_issues": null,
+  "date_fixes": {
+   "day_month_swapped": 26705,
+   "out_of_sequence_dropped": 11,
+   "sequence_gaps": 17
+  }
+ },
+ "clean": {
+  "range_nulled": {
+   "pm25": 257,
+   "pm10": 510,
+   "so2": 189,
+   "no": 653,
+   "no2": 145,
+   "nox": 518,
+   "co": 280,
+   "o3": 516,
+   "ws": 411,
+   "wd": 0,
+   "temp": 1370,
+   "rh": 1717,
+   "sr": 92,
+   "bp": 2528,
+   "rain": 224,
+   "vws": 171
+  },
+  "quarantined": [
+   {
+    "station_id": "narayanganj",
+    "year": 2024,
+    "column": "no2",
+    "bad_frac": 0.502,
+    "n_nulled": 7347
+   },
+   {
+    "station_id": "dhk_barc",
+    "year": 2020,
+    "column": "wd",
+    "bad_frac": 1.0,
+    "n_nulled": 710
+   },
+   {
+    "station_id": "ctg_agrabad",
+    "year": 2020,
+    "column": "temp",
+    "bad_frac": 0.481,
+    "n_nulled": 732
+   },
+   {
+    "station_id": "dhk_doe",
+    "year": 2023,
+    "column": "temp",
+    "bad_frac": 0.908,
+    "n_nulled": 3054
+   },
+   {
+    "station_id": "gazipur",
+    "year": 2024,
+    "column": "temp",
+    "bad_frac": 0.362,
+    "n_nulled": 4118
+   },
+   {
+    "station_id": "sylhet",
+    "year": 2024,
+    "column": "temp",
+    "bad_frac": 1.0,
+    "n_nulled": 6423
+   },
+   {
+    "station_id": "ctg_agrabad",
+    "year": 2021,
+    "column": "rh",
+    "bad_frac": 0.388,
+    "n_nulled": 5928
+   },
+   {
+    "station_id": "ctg_tv",
+    "year": 2020,
+    "column": "rh",
+    "bad_frac": 1.0,
+    "n_nulled": 451
+   },
+   {
+    "station_id": "cumilla",
+    "year": 2024,
+    "column": "rh",
+    "bad_frac": 0.862,
+    "n_nulled": 8559
+   },
+   {
+    "station_id": "gazipur",
+    "year": 2023,
+    "column": "rh",
+    "bad_frac": 0.939,
+    "n_nulled": 82
+   },
+   {
+    "station_id": "gazipur",
+    "year": 2024,
+    "column": "rh",
+    "bad_frac": 0.45,
+    "n_nulled": 3708
+   },
+   {
+    "station_id": "gazipur",
+    "year": 2024,
+    "column": "sr",
+    "bad_frac": 0.314,
+    "n_nulled": 7633
+   },
+   {
+    "station_id": "barishal",
+    "year": 2020,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 607
+   },
+   {
+    "station_id": "barishal",
+    "year": 2021,
+    "column": "bp",
+    "bad_frac": 0.34,
+    "n_nulled": 848
+   },
+   {
+    "station_id": "barishal",
+    "year": 2024,
+    "column": "bp",
+    "bad_frac": 0.607,
+    "n_nulled": 7996
+   },
+   {
+    "station_id": "ctg_agrabad",
+    "year": 2020,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 732
+   },
+   {
+    "station_id": "ctg_agrabad",
+    "year": 2024,
+    "column": "bp",
+    "bad_frac": 0.25,
+    "n_nulled": 6991
+   },
+   {
+    "station_id": "ctg_tv",
+    "year": 2012,
+    "column": "bp",
+    "bad_frac": 0.504,
+    "n_nulled": 387
+   },
+   {
+    "station_id": "ctg_tv",
+    "year": 2013,
+    "column": "bp",
+    "bad_frac": 0.658,
+    "n_nulled": 4417
+   },
+   {
+    "station_id": "ctg_tv",
+    "year": 2021,
+    "column": "bp",
+    "bad_frac": 0.335,
+    "n_nulled": 4492
+   },
+   {
+    "station_id": "cumilla",
+    "year": 2020,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 591
+   },
+   {
+    "station_id": "dhk_barc",
+    "year": 2012,
+    "column": "bp",
+    "bad_frac": 0.37,
+    "n_nulled": 1250
+   },
+   {
+    "station_id": "dhk_barc",
+    "year": 2013,
+    "column": "bp",
+    "bad_frac": 0.881,
+    "n_nulled": 5570
+   },
+   {
+    "station_id": "dhk_barc",
+    "year": 2021,
+    "column": "bp",
+    "bad_frac": 0.626,
+    "n_nulled": 8636
+   },
+   {
+    "station_id": "dhk_barc",
+    "year": 2023,
+    "column": "bp",
+    "bad_frac": 0.566,
+    "n_nulled": 5442
+   },
+   {
+    "station_id": "dhk_darussalam",
+    "year": 2020,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 744
+   },
+   {
+    "station_id": "dhk_darussalam",
+    "year": 2021,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 2961
+   },
+   {
+    "station_id": "dhk_doe",
+    "year": 2023,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 3054
+   },
+   {
+    "station_id": "gazipur",
+    "year": 2023,
+    "column": "bp",
+    "bad_frac": 0.982,
+    "n_nulled": 869
+   },
+   {
+    "station_id": "gazipur",
+    "year": 2024,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 7639
+   },
+   {
+    "station_id": "mymensingh",
+    "year": 2020,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 744
+   },
+   {
+    "station_id": "sylhet",
+    "year": 2012,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 1331
+   },
+   {
+    "station_id": "sylhet",
+    "year": 2013,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 6388
+   },
+   {
+    "station_id": "sylhet",
+    "year": 2024,
+    "column": "bp",
+    "bad_frac": 1.0,
+    "n_nulled": 6423
+   },
+   {
+    "station_id": "dhk_doe",
+    "year": 2023,
+    "column": "rain",
+    "bad_frac": 0.996,
+    "n_nulled": 2923
+   },
+   {
+    "station_id": "sylhet",
+    "year": 2024,
+    "column": "rain",
+    "bad_frac": 1.0,
+    "n_nulled": 6423
+   },
+   {
+    "station_id": "cumilla",
+    "year": 2023,
+    "column": "vws",
+    "bad_frac": 0.477,
+    "n_nulled": 1092
+   },
+   {
+    "station_id": "dhk_barc",
+    "year": 2023,
+    "column": "vws",
+    "bad_frac": 0.408,
+    "n_nulled": 1535
+   },
+   {
+    "station_id": "dhk_doe",
+    "year": 2023,
+    "column": "vws",
+    "bad_frac": 1.0,
+    "n_nulled": 3055
+   },
+   {
+    "station_id": "khulna",
+    "year": 2023,
+    "column": "vws",
+    "bad_frac": 0.998,
+    "n_nulled": 3118
+   },
+   {
+    "station_id": "rangpur",
+    "year": 2023,
+    "column": "vws",
+    "bad_frac": 0.356,
+    "n_nulled": 382
+   },
+   {
+    "station_id": "sylhet",
+    "year": 2024,
+    "column": "vws",
+    "bad_frac": 1.0,
+    "n_nulled": 6422
+   }
+  ],
+  "stuck_nulled": {
+   "pm25": 5922,
+   "pm10": 3983
+  },
+  "duplicates": {
+   "rows_in_duplicate_keys": 0,
+   "exact_dropped": 0,
+   "conflicting_keys": 0
+  }
+ },
+ "coverage": [
+  {
+   "station_id": "barishal",
+   "first": "2012-11-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 106656,
+   "pm25_frac": 0.6284972247224723,
+   "pm10_frac": 0.5299467446744675
+  },
+  {
+   "station_id": "ctg_agrabad",
+   "first": "2012-11-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 106656,
+   "pm25_frac": 0.5646658415841584,
+   "pm10_frac": 0.6738861386138614
+  },
+  {
+   "station_id": "ctg_tv",
+   "first": "2012-11-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 106656,
+   "pm25_frac": 0.4312931293129313,
+   "pm10_frac": 0.4722847284728473
+  },
+  {
+   "station_id": "cumilla",
+   "first": "2020-01-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 43848,
+   "pm25_frac": 0.7232256887429301,
+   "pm10_frac": 0.5751003466520708
+  },
+  {
+   "station_id": "dhk_barc",
+   "first": "2012-11-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 106656,
+   "pm25_frac": 0.7360298529852985,
+   "pm10_frac": 0.6346853435343535
+  },
+  {
+   "station_id": "dhk_darussalam",
+   "first": "2012-11-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 106656,
+   "pm25_frac": 0.8146564656465647,
+   "pm10_frac": 0.7810999849984999
+  },
+  {
+   "station_id": "dhk_doe",
+   "first": "2023-01-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 17544,
+   "pm25_frac": 0.8329913360693114,
+   "pm10_frac": 0.8423962608299134
+  },
+  {
+   "station_id": "gazipur",
+   "first": "2012-11-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 106656,
+   "pm25_frac": 0.7014138913891389,
+   "pm10_frac": 0.6864498949894989
+  },
+  {
+   "station_id": "khulna",
+   "first": "2022-01-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 26304,
+   "pm25_frac": 0.7950501824817519,
+   "pm10_frac": 0.7541058394160584
+  },
+  {
+   "station_id": "mymensingh",
+   "first": "2020-01-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 43848,
+   "pm25_frac": 0.6452061667578909,
+   "pm10_frac": 0.5550538222952016
+  },
+  {
+   "station_id": "narayanganj",
+   "first": "2012-11-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 106656,
+   "pm25_frac": 0.695722697269727,
+   "pm10_frac": 0.7464746474647465
+  },
+  {
+   "station_id": "narsingdi",
+   "first": "2022-01-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 26304,
+   "pm25_frac": 0.850897201946472,
+   "pm10_frac": 0.6916058394160584
+  },
+  {
+   "station_id": "rajshahi",
+   "first": "2022-01-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 26304,
+   "pm25_frac": 0.8914993917274939,
+   "pm10_frac": 0.6808090024330901
+  },
+  {
+   "station_id": "rangpur",
+   "first": "2022-01-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 26304,
+   "pm25_frac": 0.8131462895377128,
+   "pm10_frac": 0.6889066301703163
+  },
+  {
+   "station_id": "savar",
+   "first": "2020-01-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 43848,
+   "pm25_frac": 0.7370689655172413,
+   "pm10_frac": 0.7498631636562672
+  },
+  {
+   "station_id": "sylhet",
+   "first": "2012-11-01 01:00:00",
+   "last": "2025-01-01 00:00:00",
+   "hours": 106656,
+   "pm25_frac": 0.6122956045604561,
+   "pm10_frac": 0.6386982448244825
+  }
+ ],
+ "rows_clean": 1102447,
+ "grid_rows": 1107552,
+ "pm25_nonnull": 748036,
+ "pm10_nonnull": 721992,
+ "pm25_gt_pm10": 35082,
+ "unit_issues": [
+  {
+   "source": "2022",
+   "station": "dhk_barc",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "barishal",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "ctg_agrabad",
+   "column": "no",
+   "unit": "_"
+  },
+  {
+   "source": "2022",
+   "station": "ctg_agrabad",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "cumilla",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "dhk_darussalam",
+   "column": "no",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2022",
+   "station": "dhk_darussalam",
+   "column": "no2",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2022",
+   "station": "dhk_darussalam",
+   "column": "nox",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2022",
+   "station": "dhk_darussalam",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "gazipur",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "khulna",
+   "column": "no",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2022",
+   "station": "khulna",
+   "column": "no2",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2022",
+   "station": "khulna",
+   "column": "nox",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2022",
+   "station": "khulna",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "mymensingh",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "narayanganj",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "narsingdi",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "rangpur",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "savar",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "sylhet",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2022",
+   "station": "ctg_tv",
+   "column": "wd",
+   "unit": "m/s-------"
+  },
+  {
+   "source": "2022",
+   "station": "ctg_tv",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "dhk_barc",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "barishal",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "ctg_agrabad",
+   "column": "no",
+   "unit": "_"
+  },
+  {
+   "source": "2023",
+   "station": "ctg_agrabad",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "cumilla",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "dhk_darussalam",
+   "column": "no",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2023",
+   "station": "dhk_darussalam",
+   "column": "no2",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2023",
+   "station": "dhk_darussalam",
+   "column": "nox",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2023",
+   "station": "dhk_darussalam",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "dhk_doe",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "gazipur",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "khulna",
+   "column": "no",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2023",
+   "station": "khulna",
+   "column": "no2",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2023",
+   "station": "khulna",
+   "column": "nox",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2023",
+   "station": "khulna",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "mymensingh",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "narayanganj",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "narsingdi",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "rangpur",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "savar",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "sylhet",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2023",
+   "station": "ctg_tv",
+   "column": "wd",
+   "unit": "m/s-------"
+  },
+  {
+   "source": "2023",
+   "station": "ctg_tv",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "dhk_barc",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "barishal",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "ctg_agrabad",
+   "column": "no",
+   "unit": "_"
+  },
+  {
+   "source": "2024",
+   "station": "ctg_agrabad",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "cumilla",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "dhk_darussalam",
+   "column": "no",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2024",
+   "station": "dhk_darussalam",
+   "column": "no2",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2024",
+   "station": "dhk_darussalam",
+   "column": "nox",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2024",
+   "station": "dhk_darussalam",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "dhk_doe",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "gazipur",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "khulna",
+   "column": "no",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2024",
+   "station": "khulna",
+   "column": "no2",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2024",
+   "station": "khulna",
+   "column": "nox",
+   "unit": "ug/m3"
+  },
+  {
+   "source": "2024",
+   "station": "khulna",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "mymensingh",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "narsingdi",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "rangpur",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "savar",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "sylhet",
+   "column": "temp",
+   "unit": "degreC"
+  },
+  {
+   "source": "2024",
+   "station": "ctg_tv",
+   "column": "wd",
+   "unit": "m/s-------"
+  },
+  {
+   "source": "2024",
+   "station": "ctg_tv",
+   "column": "temp",
+   "unit": "degreC"
+  }
+ ],
+ "timezone": "Asia/Dhaka (UTC+6), naive; ts = end of averaging hour",
+ "stations": {
+  "dhk_barc": {
+   "name": "Dhaka \u2013 BARC, Farmgate",
+   "name_bn": "\u09a2\u09be\u0995\u09be \u2013 \u09ac\u09bf\u098f\u0986\u09b0\u09b8\u09bf, \u09ab\u09be\u09b0\u09cd\u09ae\u0997\u09c7\u099f",
+   "city": "Dhaka",
+   "lat": 23.759,
+   "lon": 90.389
+  },
+  "dhk_darussalam": {
+   "name": "Dhaka \u2013 Darussalam",
+   "name_bn": "\u09a2\u09be\u0995\u09be \u2013 \u09a6\u09be\u09b0\u09c1\u09b8 \u09b8\u09be\u09b2\u09be\u09ae",
+   "city": "Dhaka",
+   "lat": 23.781,
+   "lon": 90.356
+  },
+  "dhk_doe": {
+   "name": "Dhaka \u2013 DoE, Agargaon",
+   "name_bn": "\u09a2\u09be\u0995\u09be \u2013 \u09aa\u09b0\u09bf\u09ac\u09c7\u09b6 \u0985\u09a7\u09bf\u09a6\u09aa\u09cd\u09a4\u09b0, \u0986\u0997\u09be\u09b0\u0997\u09be\u0981\u0993",
+   "city": "Dhaka",
+   "lat": 23.778,
+   "lon": 90.379
+  },
+  "dhk_sangsad": {
+   "name": "Dhaka \u2013 Sangsad Bhaban",
+   "name_bn": "\u09a2\u09be\u0995\u09be \u2013 \u09b8\u0982\u09b8\u09a6 \u09ad\u09ac\u09a8",
+   "city": "Dhaka",
+   "lat": 23.762,
+   "lon": 90.378
+  },
+  "gazipur": {
+   "name": "Gazipur",
+   "name_bn": "\u0997\u09be\u099c\u09c0\u09aa\u09c1\u09b0",
+   "city": "Gazipur",
+   "lat": 23.994,
+   "lon": 90.42
+  },
+  "narayanganj": {
+   "name": "Narayanganj",
+   "name_bn": "\u09a8\u09be\u09b0\u09be\u09af\u09bc\u09a3\u0997\u099e\u09cd\u099c",
+   "city": "Narayanganj",
+   "lat": 23.631,
+   "lon": 90.508
+  },
+  "savar": {
+   "name": "Savar",
+   "name_bn": "\u09b8\u09be\u09ad\u09be\u09b0",
+   "city": "Savar",
+   "lat": 23.858,
+   "lon": 90.267
+  },
+  "narsingdi": {
+   "name": "Narsingdi",
+   "name_bn": "\u09a8\u09b0\u09b8\u09bf\u0982\u09a6\u09c0",
+   "city": "Narsingdi",
+   "lat": 23.921,
+   "lon": 90.717
+  },
+  "ctg_agrabad": {
+   "name": "Chattogram \u2013 Agrabad",
+   "name_bn": "\u099a\u099f\u09cd\u099f\u0997\u09cd\u09b0\u09be\u09ae \u2013 \u0986\u0997\u09cd\u09b0\u09be\u09ac\u09be\u09a6",
+   "city": "Chattogram",
+   "lat": 22.323,
+   "lon": 91.812
+  },
+  "ctg_tv": {
+   "name": "Chattogram \u2013 TV Station, Khulshi",
+   "name_bn": "\u099a\u099f\u09cd\u099f\u0997\u09cd\u09b0\u09be\u09ae \u2013 \u099f\u09bf\u09ad\u09bf \u09b8\u09cd\u099f\u09c7\u09b6\u09a8, \u0996\u09c1\u09b2\u09b6\u09c0",
+   "city": "Chattogram",
+   "lat": 22.356,
+   "lon": 91.807
+  },
+  "rajshahi": {
+   "name": "Rajshahi",
+   "name_bn": "\u09b0\u09be\u099c\u09b6\u09be\u09b9\u09c0",
+   "city": "Rajshahi",
+   "lat": 24.369,
+   "lon": 88.625
+  },
+  "khulna": {
+   "name": "Khulna",
+   "name_bn": "\u0996\u09c1\u09b2\u09a8\u09be",
+   "city": "Khulna",
+   "lat": 22.816,
+   "lon": 89.565
+  },
+  "sylhet": {
+   "name": "Sylhet",
+   "name_bn": "\u09b8\u09bf\u09b2\u09c7\u099f",
+   "city": "Sylhet",
+   "lat": 24.889,
+   "lon": 91.867
+  },
+  "barishal": {
+   "name": "Barishal",
+   "name_bn": "\u09ac\u09b0\u09bf\u09b6\u09be\u09b2",
+   "city": "Barishal",
+   "lat": 22.7,
+   "lon": 90.365
+  },
+  "mymensingh": {
+   "name": "Mymensingh",
+   "name_bn": "\u09ae\u09af\u09bc\u09ae\u09a8\u09b8\u09bf\u0982\u09b9",
+   "city": "Mymensingh",
+   "lat": 24.757,
+   "lon": 90.408
+  },
+  "cumilla": {
+   "name": "Cumilla",
+   "name_bn": "\u0995\u09c1\u09ae\u09bf\u09b2\u09cd\u09b2\u09be",
+   "city": "Cumilla",
+   "lat": 23.461,
+   "lon": 91.18
+  },
+  "rangpur": {
+   "name": "Rangpur",
+   "name_bn": "\u09b0\u0982\u09aa\u09c1\u09b0",
+   "city": "Rangpur",
+   "lat": 25.746,
+   "lon": 89.25
+  }
+ }
+}
