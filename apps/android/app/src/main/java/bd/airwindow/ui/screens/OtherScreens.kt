@@ -196,7 +196,7 @@ fun MoreScreen(vm: AppViewModel, p: UserPrefs, s: Strings) {
                 Row(Modifier.fillMaxWidth().padding(top = 14.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text(s.lowData, Modifier.weight(1f))
                     Switch(p.lowData, { v -> vm.update { it.copy(lowData = v) } },
-                        colors = SwitchDefaults.colors(checkedTrackColor = c.accentFill))
+                        colors = SwitchDefaults.colors(checkedTrackColor = c.accentFill, uncheckedThumbColor = c.ink3, uncheckedTrackColor = c.card2, uncheckedBorderColor = c.ink3))
                 }
             }
         }

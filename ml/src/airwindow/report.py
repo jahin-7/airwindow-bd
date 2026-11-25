@@ -23,6 +23,30 @@ def _f(x, d=1):
     return "–" if x is None else f"{x:.{d}f}"
 
 
+def headline(m: dict) -> str:
+    serving = m.get("serving", {})
+    out = []
+    for pol in ("pm25", "pm10"):
+        key = f"lightgbm_{serving.get(pol, 'now_weather')}"
+        r = {x["horizon"]: x for x in m["overall"] if x["pollutant"] == pol and x["model"] == key}
+        p = {x["horizon"]: x for x in m["overall"] if x["pollutant"] == pol and x["model"] == "persistence"}
+        out.append(f"- **{POL[pol]}, served model:** 6-hour-ahead error (MAE) **{r[6]['mae']:.1f} µg/m³** vs "
+                   f"{p[6]['mae']:.1f} for \"no change\" ({100 * r[6]['skill_vs_persistence']:.0f}% lower); "
+                   f"3 h: {r[3]['mae']:.1f} vs {p[3]['mae']:.1f}; 1 h: {r[1]['mae']:.1f} vs {p[1]['mae']:.1f}. "
+                   f"80% ranges contained the true value {100 * r[6]['interval80_coverage']:.0f}% of the time at 6 h.")
+    return "\n".join(out)
+
+
+def validation_table(rows: list) -> str:
+    out = ["### Variant choice (validation year 2023 only)", "",
+           "| Pollutant | Variant | +1 h MAE | +3 h MAE | +6 h MAE |", "|---|---|---:|---:|---:|"]
+    for pol in ("pm25", "pm10"):
+        for v in ("now_weather", "tgt_weather"):
+            r = {x["horizon"]: x["mae"] for x in rows if x["pollutant"] == pol and x["variant"] == v}
+            out.append(f"| {POL[pol]} | {v} | {r[1]:.1f} | {r[3]:.1f} | {r[6]:.1f} |")
+    return "\n".join(out) + "\n"
+
+
 def tables(m: dict) -> str:
     rows = m["overall"] + m.get("gru", [])
     serving = m.get("serving", {})
@@ -64,7 +88,10 @@ def main() -> None:
     sv = a.art / "serving.json"
     if sv.exists():
         m["serving"] = json.loads(sv.read_text())
-    print(tables(m))
+    print(headline(m) + "\n\n" + tables(m))
+    vm = a.art / "validation_metrics.json"
+    if vm.exists():
+        print(validation_table(json.loads(vm.read_text())))
 
 
 if __name__ == "__main__":

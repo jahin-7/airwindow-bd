@@ -1,0 +1,48 @@
+feature table (3322656, 69) in 7s
+[pm25/now_weather] train=1,542,218 val=327,601 test=321,712 features=56
+  h=1 MAE persist=25.49 lgb=24.34 skill=0.045 cov80=0.778
+  h=3 MAE persist=42.37 lgb=31.23 skill=0.263 cov80=0.792
+  h=6 MAE persist=53.65 lgb=34.83 skill=0.351 cov80=0.791
+[pm25/tgt_weather] train=1,542,218 val=327,601 test=321,712 features=66
+  h=1 MAE persist=25.49 lgb=24.96 skill=0.021 cov80=0.780
+  h=3 MAE persist=42.37 lgb=31.97 skill=0.246 cov80=0.783
+  h=6 MAE persist=53.65 lgb=35.76 skill=0.333 cov80=0.781
+[pm10/now_weather] train=1,562,566 val=290,361 test=266,033 features=56
+  h=1 MAE persist=26.70 lgb=26.10 skill=0.023 cov80=0.802
+  h=3 MAE persist=50.52 lgb=38.23 skill=0.243 cov80=0.805
+  h=6 MAE persist=68.56 lgb=43.38 skill=0.367 cov80=0.809
+[pm10/tgt_weather] train=1,562,566 val=290,361 test=266,033 features=66
+  h=1 MAE persist=26.70 lgb=26.92 skill=-0.008 cov80=0.813
+  h=3 MAE persist=50.52 lgb=39.41 skill=0.220 cov80=0.807
+  h=6 MAE persist=68.56 lgb=44.93 skill=0.345 cov80=0.803
+LOSO dhk_darussalam pm25 h=1 MAE=22.21 skill=0.066
+LOSO dhk_darussalam pm25 h=3 MAE=28.95 skill=0.197
+LOSO dhk_darussalam pm25 h=6 MAE=31.88 skill=0.298
+LOSO dhk_darussalam pm10 h=1 MAE=31.42 skill=0.020
+LOSO dhk_darussalam pm10 h=3 MAE=42.92 skill=0.184
+LOSO dhk_darussalam pm10 h=6 MAE=47.67 skill=0.295
+LOSO ctg_agrabad pm25 h=1 MAE=16.40 skill=0.096
+LOSO ctg_agrabad pm25 h=3 MAE=22.11 skill=0.213
+LOSO ctg_agrabad pm25 h=6 MAE=24.17 skill=0.279
+LOSO ctg_agrabad pm10 h=1 MAE=26.57 skill=0.005
+LOSO ctg_agrabad pm10 h=3 MAE=36.39 skill=0.136
+LOSO ctg_agrabad pm10 h=6 MAE=40.17 skill=0.216
+LOSO sylhet pm25 h=1 MAE=36.52 skill=0.026
+LOSO sylhet pm25 h=3 MAE=43.92 skill=0.278
+LOSO sylhet pm25 h=6 MAE=48.09 skill=0.343
+LOSO sylhet pm10 h=1 MAE=47.17 skill=0.015
+LOSO sylhet pm10 h=3 MAE=60.18 skill=0.259
+LOSO sylhet pm10 h=6 MAE=65.00 skill=0.365
+LOSO rajshahi pm25 h=1 MAE=17.38 skill=0.068
+LOSO rajshahi pm25 h=3 MAE=26.13 skill=0.254
+LOSO rajshahi pm25 h=6 MAE=30.68 skill=0.354
+LOSO rajshahi pm10 h=1 MAE=26.28 skill=0.077
+LOSO rajshahi pm10 h=3 MAE=42.43 skill=0.302
+LOSO rajshahi pm10 h=6 MAE=51.18 skill=0.425
+LOSO khulna pm25 h=1 MAE=13.12 skill=0.056
+LOSO khulna pm25 h=3 MAE=19.73 skill=0.202
+LOSO khulna pm25 h=6 MAE=23.34 skill=0.293
+LOSO khulna pm10 h=1 MAE=18.17 skill=0.040
+LOSO khulna pm10 h=3 MAE=30.26 skill=0.281
+LOSO khulna pm10 h=6 MAE=36.50 skill=0.407
+done in 3580s

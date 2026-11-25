@@ -1,0 +1,86 @@
+[
+ {
+  "pollutant": "pm25",
+  "variant": "now_weather",
+  "horizon": 1,
+  "split": "val",
+  "mae": 14.199511005498122
+ },
+ {
+  "pollutant": "pm25",
+  "variant": "now_weather",
+  "horizon": 3,
+  "split": "val",
+  "mae": 21.215518987812775
+ },
+ {
+  "pollutant": "pm25",
+  "variant": "now_weather",
+  "horizon": 6,
+  "split": "val",
+  "mae": 25.14428977089366
+ },
+ {
+  "pollutant": "pm25",
+  "variant": "tgt_weather",
+  "horizon": 1,
+  "split": "val",
+  "mae": 14.241894507081716
+ },
+ {
+  "pollutant": "pm25",
+  "variant": "tgt_weather",
+  "horizon": 3,
+  "split": "val",
+  "mae": 21.055088432819993
+ },
+ {
+  "pollutant": "pm25",
+  "variant": "tgt_weather",
+  "horizon": 6,
+  "split": "val",
+  "mae": 24.6676032010694
+ },
+ {
+  "pollutant": "pm10",
+  "variant": "now_weather",
+  "horizon": 1,
+  "split": "val",
+  "mae": 23.986547003698163
+ },
+ {
+  "pollutant": "pm10",
+  "variant": "now_weather",
+  "horizon": 3,
+  "split": "val",
+  "mae": 35.81280493086738
+ },
+ {
+  "pollutant": "pm10",
+  "variant": "now_weather",
+  "horizon": 6,
+  "split": "val",
+  "mae": 41.78752386790243
+ },
+ {
+  "pollutant": "pm10",
+  "variant": "tgt_weather",
+  "horizon": 1,
+  "split": "val",
+  "mae": 24.181591767598288
+ },
+ {
+  "pollutant": "pm10",
+  "variant": "tgt_weather",
+  "horizon": 3,
+  "split": "val",
+  "mae": 35.57502513286829
+ },
+ {
+  "pollutant": "pm10",
+  "variant": "tgt_weather",
+  "horizon": 6,
+  "split": "val",
+  "mae": 40.93319849239561
+ }
+]
