@@ -194,7 +194,10 @@ fun MoreScreen(vm: AppViewModel, p: UserPrefs, s: Strings) {
                 Spacer(Modifier.height(8.dp))
                 Segmented(p.theme, listOf("system" to s.system, "light" to s.light, "dark" to s.dark)) { v -> vm.update { it.copy(theme = v) } }
                 Row(Modifier.fillMaxWidth().padding(top = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(s.lowData, Modifier.weight(1f))
+                    Column(Modifier.weight(1f)) {
+                        Text(s.lowData)
+                        Text(s.lowDataSub, fontSize = 12.sp, color = c.ink3)
+                    }
                     Switch(p.lowData, { v -> vm.update { it.copy(lowData = v) } },
                         colors = SwitchDefaults.colors(checkedTrackColor = c.accentFill, uncheckedThumbColor = c.ink3, uncheckedTrackColor = c.card2, uncheckedBorderColor = c.ink3))
                 }

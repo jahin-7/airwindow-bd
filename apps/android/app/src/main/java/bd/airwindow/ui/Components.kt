@@ -202,4 +202,5 @@ fun HoursStrip(windows: List<HourWindow>, s: Strings) {
     }
 }
 
-fun hexColor(hex: String): Color = Color(android.graphics.Color.parseColor(hex))
+/** Colours come from the API; a malformed one falls back to grey rather than crashing the screen. */
+fun hexColor(hex: String): Color = runCatching { Color(android.graphics.Color.parseColor(hex)) }.getOrDefault(Color.Gray)

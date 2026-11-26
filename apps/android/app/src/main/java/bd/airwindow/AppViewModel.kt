@@ -64,7 +64,9 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         val now = SystemClock.elapsedRealtime()
         val same = prev?.first == key
         val shown = flow.value is Load.Ok
-        if (same && shown && !force && now - prev!!.second < 60_000) return@launch
+        // Low-data mode reuses what's on screen for longer before asking again.
+        val freshFor = if (prefs.value?.lowData == true) 15 * 60_000L else 60_000L
+        if (same && shown && !force && now - prev!!.second < freshFor) return@launch
         if (!shown || (!same && !keepShown)) flow.value = Load.Loading
         asked[flow] = key to now
         val r = load(block)

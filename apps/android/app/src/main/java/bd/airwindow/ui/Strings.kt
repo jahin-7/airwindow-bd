@@ -87,6 +87,7 @@ class Strings(val bn: Boolean) {
     val light get() = t("Light", "হালকা")
     val dark get() = t("Dark", "গাঢ়")
     val lowData get() = t("Low-data mode", "কম ডেটা মোড")
+    val lowDataSub get() = t("Refreshes less often: data on screen is reused for 15 minutes", "কম রিফ্রেশ করে: স্ক্রিনের তথ্য ১৫ মিনিট পর্যন্ত ব্যবহার করে")
     val method get() = t("Data & methodology", "তথ্য ও পদ্ধতি")
     val methodText get() = t(
         "Training data: CAMS-BD — hourly measurements from Bangladesh DoE Continuous Air Monitoring Stations, Nov 2012–Jan 2025 (CC BY 4.0). Weather: Open-Meteo.\n\nAQI: bands and colours from DoE's \"AQI Scheme for Bangladesh\"; concentration-to-index uses US EPA (2024) breakpoints on 24-hour means. WHO 2021 guideline: PM2.5 15, PM10 45 µg/m³ (24-hour).\n\nThis is not medical advice. During severe pollution, follow official public-health advisories.",
