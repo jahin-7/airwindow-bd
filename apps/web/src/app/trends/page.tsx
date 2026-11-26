@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, LargeTitle, Segmented, Skeleton } from "@/components/ui";
 import { api } from "@/lib/api";
 import { dict, num, toBn } from "@/lib/i18n";
 import { usePrefs } from "@/lib/prefs";
+import { useApi } from "@/lib/useApi";
 
 const WHO = { pm25: 15, pm10: 45 } as const;
 
@@ -13,15 +14,9 @@ export default function Trends() {
   const { prefs, set } = usePrefs();
   const t = dict(prefs.lang);
   const [days, setDays] = useState("7");
-  const [data, setData] = useState<{ date: string; v: number | null }[] | null>(null);
-
-  useEffect(() => {
-    let live = true;
-    api.trends(prefs.stationId, Number(days))
-      .then((r) => live && setData(r.daily.map((d) => ({ date: d.date, v: prefs.pollutant === "pm25" ? d.pm25_mean : d.pm10_mean }))))
-      .catch(() => live && setData([]));
-    return () => { live = false; };
-  }, [prefs.stationId, prefs.pollutant, days]);
+  const tr = useApi(`trends:${prefs.stationId}:${days}`, () => api.trends(prefs.stationId, Number(days)));
+  const data = tr.data ? tr.data.daily.map((d) => ({ date: d.date, v: prefs.pollutant === "pm25" ? d.pm25_mean : d.pm10_mean }))
+    : tr.error ? [] : null;
 
   const label = (d: string) => {
     const s = `${Number(d.slice(8, 10))}/${Number(d.slice(5, 7))}`;

@@ -1,31 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
 import { AqiChip, HoursStrip, Legend } from "@/components/AirBits";
 import { ReplayBanner } from "@/components/AppShell";
 import { Card, KindTag, LargeTitle, SectionLabel, Skeleton } from "@/components/ui";
-import { api, ApiError, type Latest, type WindowsResponse } from "@/lib/api";
+import { api } from "@/lib/api";
 import { clock, dict, num } from "@/lib/i18n";
 import { usePrefs } from "@/lib/prefs";
+import { useApi } from "@/lib/useApi";
 
 export default function Today() {
   const { prefs } = usePrefs();
   const t = dict(prefs.lang);
-  const [latest, setLatest] = useState<Latest | null>(null);
-  const [win, setWin] = useState<WindowsResponse | null>(null);
-  const [winErr, setWinErr] = useState<string | null>(null);
-  const [err, setErr] = useState(false);
-
-  const load = useCallback(() => {
-    setErr(false);
-    api.latest(prefs.stationId).then(setLatest).catch(() => setErr(true));
-    api.windows({ station_id: prefs.stationId, pollutant: prefs.pollutant, activity: "walk", duration_min: 60 })
-      .then((w) => { setWin(w); setWinErr(null); })
-      .catch((e) => { setWin(null); setWinErr(e instanceof ApiError ? e.message : t.errorGeneric); });
-  }, [prefs.stationId, prefs.pollutant, t.errorGeneric]);
-
-  useEffect(() => { load(); }, [load]);
+  const lt = useApi(`latest:${prefs.stationId}`, () => api.latest(prefs.stationId));
+  const wn = useApi(`windows:${prefs.stationId}:${prefs.pollutant}:walk`,
+    () => api.windows({ station_id: prefs.stationId, pollutant: prefs.pollutant, activity: "walk", duration_min: 60 }));
+  const latest = lt.data, win = wn.data, err = !!lt.error;
+  const winErr = wn.error && (wn.error === "offline" ? t.errorGeneric : wn.error);
+  const load = () => { lt.reload(); wn.reload(); };
 
   const name = latest ? (prefs.lang === "bn" ? latest.station.name_bn : latest.station.name) : "";
   const best = win?.windows.find((w) => w.rank === 1);
@@ -36,7 +28,7 @@ export default function Today() {
 
   return (
     <>
-      <LargeTitle title={title} sub={
+      <LargeTitle reserveLines title={title} sub={
         <Link href="/stations" className="inline-flex items-center gap-2 rounded-full bg-card px-3 py-1.5 text-[14px] text-ink">
           <span className="text-accent">●</span> {t.bestWindow} · {name || "…"} <span aria-hidden>›</span>
         </Link>} />
@@ -46,7 +38,7 @@ export default function Today() {
           <Card tone="warn" className="lg:col-span-2"><p>{t.errorGeneric}</p>
             <button onClick={load} className="mt-3 rounded-full bg-accent-fill px-4 py-2 text-white">{t.retry}</button></Card>
         )}
-        {!latest && !err && <Skeleton className="h-44" />}
+        {!latest && !err && <Skeleton className="h-80" />}
 
         {latest?.status === "no_data" && (
           <Card tone="warn" className="lg:col-span-2"><div className="font-semibold">{t.noData}</div><p className="mt-1 text-[14px] text-ink-2">{t.noDataSub}</p></Card>
@@ -81,7 +73,7 @@ export default function Today() {
         <Card>
           {win ? <><HoursStrip windows={win.windows} /><Legend />
             <p className="mt-4 text-[12px] leading-relaxed text-ink-3">{t.notSafety}</p></>
-            : winErr ? <p className="text-[14px] text-ink-2">{winErr}</p> : <Skeleton className="h-44" />}
+            : winErr ? <p className="text-[14px] text-ink-2">{winErr}</p> : <Skeleton className="h-72" />}
         </Card>
         </div>
 

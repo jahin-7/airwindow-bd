@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from "motion/react";
  * One UI-style large title: the top ~third of the screen holds a big title that
  * shrinks into a compact bar as you scroll, so content lands in thumb reach.
  */
-export function LargeTitle({ title, sub, children }: { title: React.ReactNode; sub?: React.ReactNode; children?: React.ReactNode }) {
+export function LargeTitle({ title, sub, children, reserveLines }: { title: React.ReactNode; sub?: React.ReactNode; children?: React.ReactNode; reserveLines?: boolean }) {
   const { scrollY } = useScroll();
   const big = useTransform(scrollY, [0, 140], [1, 0]);
   const shift = useTransform(scrollY, [0, 140], [0, -24]);
@@ -19,7 +19,8 @@ export function LargeTitle({ title, sub, children }: { title: React.ReactNode; s
       </motion.div>
       <header className="flex min-h-[32svh] flex-col justify-end px-6 pb-6 pt-16 lg:min-h-[24vh] lg:px-4">
         <motion.div style={{ opacity: big, y: shift }}>
-          <h1 className="text-[34px] font-semibold lg:text-[44px] leading-tight tracking-tight text-balance">{title}</h1>
+          {/* reserveLines keeps room for two lines when the title changes with the data, so it can't push the page down */}
+          <h1 className={`text-[34px] font-semibold lg:text-[44px] leading-tight tracking-tight text-balance ${reserveLines ? "min-h-[2.5em] lg:min-h-0" : ""}`}>{title}</h1>
           {sub && <div className="mt-2 text-[15px] text-ink-2">{sub}</div>}
           {children}
         </motion.div>
@@ -31,7 +32,8 @@ export function LargeTitle({ title, sub, children }: { title: React.ReactNode; s
 export function Card({ children, className = "", tone = "default", ...rest }: React.HTMLAttributes<HTMLDivElement> & { tone?: "default" | "warn" | "accent" }) {
   const bg = tone === "warn" ? "bg-warn-soft" : tone === "accent" ? "bg-accent-soft" : "bg-card";
   return (
-    <motion.div layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+    // No `layout` here: it slid every card whenever anything above changed size, which read as jumping.
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 380, damping: 32 }}
       className={`${bg} rounded-[var(--radius-card)] p-5 shadow-[var(--shadow)] ${className}`} {...(rest as object)}>
       {children}

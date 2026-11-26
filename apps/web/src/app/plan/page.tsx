@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ReplayBanner } from "@/components/AppShell";
 import { Card, KindTag, LargeTitle, SectionLabel, Segmented, Skeleton } from "@/components/ui";
-import { api, ApiError, type WindowsResponse } from "@/lib/api";
+import { api } from "@/lib/api";
 import { clock, dict, num } from "@/lib/i18n";
 import { usePrefs } from "@/lib/prefs";
+import { useApi } from "@/lib/useApi";
 
 const ACTS = ["walk", "exercise", "commute", "school_run", "errands"] as const;
 
@@ -13,16 +14,11 @@ export default function Plan() {
   const { prefs, set } = usePrefs();
   const t = dict(prefs.lang);
   const [act, setAct] = useState<(typeof ACTS)[number]>("walk");
-  const [res, setRes] = useState<WindowsResponse | null>(null);
-  const [err, setErr] = useState<string | null>(null);
-
-  useEffect(() => {
-    let live = true;
-    api.windows({ station_id: prefs.stationId, pollutant: prefs.pollutant, activity: act, duration_min: 60 })
-      .then((r) => { if (live) { setRes(r); setErr(null); } })
-      .catch((e) => { if (live) { setRes(null); setErr(e instanceof ApiError ? e.message : t.errorGeneric); } });
-    return () => { live = false; };
-  }, [prefs.stationId, prefs.pollutant, act, t.errorGeneric]);
+  // Another activity re-ranks the same hours, so the list stays up until the new order arrives.
+  const w = useApi(`windows:${prefs.stationId}:${prefs.pollutant}:${act}`,
+    () => api.windows({ station_id: prefs.stationId, pollutant: prefs.pollutant, activity: act, duration_min: 60 }), true);
+  const res = w.data;
+  const err = w.error && (w.error === "offline" ? t.errorGeneric : w.error);
 
   return (
     <>

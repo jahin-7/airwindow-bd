@@ -2,11 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, LargeTitle, Skeleton } from "@/components/ui";
 import { api, type Station } from "@/lib/api";
 import { dict } from "@/lib/i18n";
 import { usePrefs } from "@/lib/prefs";
+import { useApi } from "@/lib/useApi";
 
 const StationMap = dynamic(() => import("@/components/StationMap"), { ssr: false, loading: () => <Skeleton className="h-72" /> });
 
@@ -14,11 +15,12 @@ export default function Stations() {
   const { prefs, set } = usePrefs();
   const t = dict(prefs.lang);
   const router = useRouter();
-  const [all, setAll] = useState<Station[] | null>(null);
   const [q, setQ] = useState("");
   const [locErr, setLocErr] = useState(false);
 
-  useEffect(() => { api.locations().then(setAll).catch(() => setAll([])); }, []);
+  const loc = useApi("locations", () => api.locations());
+  const [near, setNear] = useState<Station[] | null>(null); // "use my location" re-sorts by distance
+  const all = useMemo<Station[] | null>(() => near ?? loc.data ?? (loc.error ? [] : null), [near, loc.data, loc.error]);
 
   const shown = useMemo(() => {
     if (!all) return [];
@@ -31,7 +33,7 @@ export default function Stations() {
   const locate = () => {
     setLocErr(false);
     navigator.geolocation?.getCurrentPosition(
-      (p) => api.nearby(p.coords.latitude, p.coords.longitude).then(setAll).catch(() => setLocErr(true)),
+      (p) => api.nearby(p.coords.latitude, p.coords.longitude).then(setNear).catch(() => setLocErr(true)),
       () => setLocErr(true), { maximumAge: 600000, timeout: 10000 });
   };
 
