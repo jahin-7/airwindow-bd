@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { ApiError } from "@/lib/api";
 
 // Responses kept for the life of the tab. Going back to a page shows what it showed last time
@@ -17,39 +17,49 @@ export interface ApiState<T> {
   reload: () => void;
 }
 
+interface Held<T> { key: string; data: T | null; error: string | null; loading: boolean }
+
+function start<T>(key: string, previous: T | null): Held<T> {
+  const hit = cache.get(key);
+  return { key, data: hit ? (hit.value as T) : previous, error: null, loading: !hit };
+}
+
 /**
  * Loads [key] with [fetcher]. [keepPrevious] keeps the old data on screen while a new key loads,
  * for changes that re-rank the same items (like picking another activity).
  */
 export function useApi<T>(key: string, fetcher: () => Promise<T>, keepPrevious = false): ApiState<T> {
-  const [state, setState] = useState<{ data: T | null; error: string | null; loading: boolean }>(() => {
-    const hit = cache.get(key);
-    return { data: hit ? (hit.value as T) : null, error: null, loading: !hit };
-  });
+  const [held, setHeld] = useState<Held<T>>(() => start<T>(key, null));
   const [tick, setTick] = useState(0);
-  const fetch = useRef(fetcher);
-  fetch.current = fetcher;
+
+  // A new key: switch what's shown during this render, so there's no frame of stale content.
+  let state = held;
+  if (held.key !== key) {
+    state = start<T>(key, keepPrevious ? held.data : null);
+    setHeld(state);
+  }
+
+  const run = useEffectEvent(fetcher);
 
   useEffect(() => {
-    let live = true;
     const hit = cache.get(key);
-    setState((prev) => ({ data: hit ? (hit.value as T) : keepPrevious ? prev.data : null, error: null, loading: true }));
-    if (hit && tick === 0 && Date.now() - hit.at < FRESH_MS) {
-      setState((prev) => ({ ...prev, loading: false }));
-      return;
-    }
-    fetch.current()
+    if (hit && tick === 0 && Date.now() - hit.at < FRESH_MS) return;
+    let live = true;
+    run()
       .then((value) => {
         cache.set(key, { at: Date.now(), value });
-        if (live) setState({ data: value, error: null, loading: false });
+        if (live) setHeld({ key, data: value, error: null, loading: false });
       })
       .catch((e) => {
         if (!live) return;
         const message = e instanceof ApiError ? e.message : "offline";
-        setState((prev) => ({ data: prev.data, error: prev.data ? null : message, loading: false }));
+        setHeld((h) => (h.key !== key ? h : { ...h, error: h.data ? null : message, loading: false }));
       });
     return () => { live = false; };
-  }, [key, tick, keepPrevious]);
+  }, [key, tick]);
 
-  return { ...state, reload: () => setTick((n) => n + 1) };
+  return {
+    data: state.data, error: state.error, loading: state.loading,
+    reload: () => { setHeld((h) => ({ ...h, loading: true })); setTick((n) => n + 1); },
+  };
 }
