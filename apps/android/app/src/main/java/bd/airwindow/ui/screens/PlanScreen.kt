@@ -49,8 +49,8 @@ private val ACTS = listOf("walk", "exercise", "commute", "school_run", "errands"
 fun PlanScreen(vm: AppViewModel, p: UserPrefs, s: Strings) {
     val c = LocalAw.current
     var act by rememberSaveable { mutableStateOf("walk") }
-    LaunchedEffect(p.stationId, p.pollutant, act) { vm.refreshWindows(p, act) }
-    val win by vm.windows.collectAsState()
+    LaunchedEffect(p.stationId, p.pollutant, act) { vm.refreshPlan(p, act) }
+    val win by vm.planWindows.collectAsState()
     val meta by vm.meta.collectAsState()
 
     OneUiScreen(s.planTitle, sub = { Text(s.tagline, color = c.ink2, fontSize = 15.sp) }) {

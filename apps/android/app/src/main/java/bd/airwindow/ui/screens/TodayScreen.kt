@@ -44,7 +44,7 @@ fun TodayScreen(vm: AppViewModel, p: UserPrefs, s: Strings, openStations: () -> 
     val c = LocalAw.current
     LaunchedEffect(p.stationId, p.pollutant) { vm.refreshToday(p) }
     val latest by vm.latest.collectAsState()
-    val win by vm.windows.collectAsState()
+    val win by vm.todayWindows.collectAsState()
     val meta by vm.meta.collectAsState()
 
     val best = (win as? Load.Ok)?.value?.windows?.firstOrNull { it.rank == 1 }
@@ -55,7 +55,7 @@ fun TodayScreen(vm: AppViewModel, p: UserPrefs, s: Strings, openStations: () -> 
         else -> "${s.clock(best.validAt)} · ${s.inHours(best.horizonH)}"
     }
     val st = (latest as? Load.Ok)?.value?.station
-    OneUiScreen(title, sub = {
+    OneUiScreen(title, titleLines = 2, sub = {
         Row(Modifier.clip(RoundedCornerShape(50)).background(c.card).clickable(onClick = openStations).padding(horizontal = 12.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically) {
             Text("● ", color = c.accent, fontSize = 12.sp)
@@ -68,7 +68,7 @@ fun TodayScreen(vm: AppViewModel, p: UserPrefs, s: Strings, openStations: () -> 
                 AwCard(tone = "warn") {
                     Text(if (l.offline) s.errorGeneric else l.message ?: s.errorGeneric)
                     Spacer(Modifier.height(12.dp))
-                    Text(s.retry, color = c.accentFill, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { vm.refreshToday(p) })
+                    Text(s.retry, color = c.accentFill, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { vm.refreshToday(p, force = true) })
                 }
             }
             is Load.Ok -> {
@@ -81,7 +81,7 @@ fun TodayScreen(vm: AppViewModel, p: UserPrefs, s: Strings, openStations: () -> 
                     if (v.sensorGrade == "low_cost") Text(s.lowCost, fontSize = 12.sp, color = LocalAw.current.warn)
                 } } }
             }
-            Load.Loading -> item { AwCard { Box(Modifier.height(160.dp)) } }
+            Load.Loading -> item { AwCard { Box(Modifier.height(300.dp)) } } // about the size of the real card
         }
         item { SectionLabel(s.nextHours) }
         item {

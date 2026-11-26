@@ -26,13 +26,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,7 +36,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -49,41 +43,62 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import bd.airwindow.data.HourWindow
 import bd.airwindow.ui.theme.LocalAw
 
 val CardShape = RoundedCornerShape(26.dp)
 
 /**
- * One UI-style screen: a tall header (title in the top third) that collapses into a
- * compact bar on scroll, so the content sits in thumb reach.
+ * One UI-style screen: the big title sits in the top third as the first item of the list, so it
+ * scrolls away with the content instead of resizing. A compact bar with the small title fades in
+ * once it's gone. Nothing changes height while scrolling, so nothing below can jump.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OneUiScreen(title: String, sub: (@Composable () -> Unit)? = null, content: LazyListScope.() -> Unit) {
+fun OneUiScreen(title: String, sub: (@Composable () -> Unit)? = null, titleLines: Int = 1, content: LazyListScope.() -> Unit) {
     val c = LocalAw.current
-    val behavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    Scaffold(
-        modifier = Modifier.nestedScroll(behavior.nestedScrollConnection),
-        containerColor = c.bg,
-        topBar = {
-            LargeTopAppBar(
-                title = {
-                    val expanded = behavior.state.collapsedFraction < 0.5f
-                    Column {
-                        Text(title, maxLines = if (expanded) 3 else 1, overflow = TextOverflow.Ellipsis,
-                            style = if (expanded) MaterialTheme.typography.displaySmall else MaterialTheme.typography.titleMedium)
-                        if (expanded && sub != null) { Spacer(Modifier.height(8.dp)); sub() }
-                    }
-                },
-                expandedHeight = 260.dp,
-                colors = TopAppBarDefaults.largeTopAppBarColors(containerColor = c.bg, scrolledContainerColor = c.bg),
-                scrollBehavior = behavior,
-            )
-        },
-    ) { pad ->
-        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(start = 16.dp, end = 16.dp,
-            top = pad.calculateTopPadding(), bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp), content = content)
+    val list = rememberLazyListState()
+    val density = LocalDensity.current
+    // 0 while the big title is fully visible, 1 once it has scrolled out of view.
+    val gone by remember {
+        derivedStateOf {
+            if (list.firstVisibleItemIndex > 0) 1f
+            else with(density) { (list.firstVisibleItemScrollOffset / 140.dp.toPx()).coerceIn(0f, 1f) }
+        }
+    }
+    val headerH = (LocalConfiguration.current.screenHeightDp * 0.3f).dp
+    Box(Modifier.fillMaxSize().background(c.bg)) {
+        LazyColumn(Modifier.fillMaxSize(), state = list,
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            item(key = "header") {
+                Column(
+                    Modifier.fillMaxWidth().statusBarsPadding().heightIn(min = headerH).padding(start = 8.dp, end = 8.dp, bottom = 12.dp)
+                        .graphicsLayer { alpha = 1f - gone; translationY = gone * 24.dp.toPx() },
+                    verticalArrangement = Arrangement.Bottom,
+                ) {
+                    // [titleLines] reserves room for a title that changes with the data, so it can't push the page down.
+                    Text(title, style = MaterialTheme.typography.displaySmall, color = c.ink, minLines = titleLines, maxLines = 3,
+                        overflow = TextOverflow.Ellipsis)
+                    if (sub != null) { Spacer(Modifier.height(10.dp)); sub() }
+                }
+            }
+            content()
+        }
+        Box(
+            Modifier.fillMaxWidth().graphicsLayer { alpha = ((gone - 0.6f) / 0.4f).coerceIn(0f, 1f) }
+                .background(c.bg).statusBarsPadding().height(56.dp).padding(horizontal = 24.dp),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            Text(title, style = MaterialTheme.typography.titleMedium, color = c.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
     }
 }
 

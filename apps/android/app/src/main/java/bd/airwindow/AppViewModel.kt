@@ -1,6 +1,7 @@
 package bd.airwindow
 
 import android.app.Application
+import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import bd.airwindow.data.Api
@@ -39,12 +40,37 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     val meta = MutableStateFlow<Meta?>(null)
     val latest = MutableStateFlow<Load<Latest>>(Load.Loading)
-    val windows = MutableStateFlow<Load<WindowsResponse>>(Load.Loading)
+    /** Today and Plan rank hours for different activities, so each keeps its own copy. */
+    val todayWindows = MutableStateFlow<Load<WindowsResponse>>(Load.Loading)
+    val planWindows = MutableStateFlow<Load<WindowsResponse>>(Load.Loading)
     val stations = MutableStateFlow<Load<List<Station>>>(Load.Loading)
     val trends = MutableStateFlow<Load<Trends>>(Load.Loading)
 
+    /** What each flow last asked for, and when. */
+    private val asked = mutableMapOf<MutableStateFlow<*>, Pair<Any, Long>>()
+
     init {
         viewModelScope.launch { meta.value = runCatching { Api.meta() }.getOrNull() }
+    }
+
+    /**
+     * Loads [key] into this flow. Coming back to a tab with the same key keeps what's on screen
+     * (and skips the call if it's under a minute old) instead of flashing a placeholder, which made
+     * the page jump and lose its scroll position. A failed refresh doesn't wipe good data either.
+     */
+    private fun <T> MutableStateFlow<Load<T>>.fetch(key: Any, force: Boolean = false, keepShown: Boolean = false, block: suspend () -> T) = viewModelScope.launch {
+        val flow = this@fetch
+        val prev = asked[flow]
+        val now = SystemClock.elapsedRealtime()
+        val same = prev?.first == key
+        val shown = flow.value is Load.Ok
+        if (same && shown && !force && now - prev!!.second < 60_000) return@launch
+        if (!shown || (!same && !keepShown)) flow.value = Load.Loading
+        asked[flow] = key to now
+        val r = load(block)
+        if (asked[flow]?.first != key) return@launch // a newer request took over
+        if (r is Load.Err && same && shown) return@launch
+        flow.value = r
     }
 
     fun update(f: (UserPrefs) -> UserPrefs) = viewModelScope.launch {
@@ -53,24 +79,22 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     fun clearPrefs() = viewModelScope.launch { repo.clear() }
 
-    fun refreshToday(p: UserPrefs, activity: String = "walk") = viewModelScope.launch {
-        latest.value = Load.Loading
-        windows.value = Load.Loading
-        latest.value = load { Api.latest(p.stationId) }
-        windows.value = load { Api.windows(p.stationId, p.pollutant, activity) }
+    fun refreshToday(p: UserPrefs, force: Boolean = false) {
+        latest.fetch(p.stationId, force) { Api.latest(p.stationId) }
+        todayWindows.fetch(Triple(p.stationId, p.pollutant, "walk"), force) { Api.windows(p.stationId, p.pollutant, "walk") }
     }
 
-    fun refreshWindows(p: UserPrefs, activity: String) = viewModelScope.launch {
-        windows.value = Load.Loading
-        windows.value = load { Api.windows(p.stationId, p.pollutant, activity) }
+    fun refreshPlan(p: UserPrefs, activity: String, force: Boolean = false) {
+        // Switching activity re-ranks the same hours: keep the list up until the new order arrives.
+        val prev = asked[planWindows]?.first as? Triple<*, *, *>
+        val sameHours = prev?.first == p.stationId && prev.second == p.pollutant
+        planWindows.fetch(Triple(p.stationId, p.pollutant, activity), force, keepShown = sameHours) { Api.windows(p.stationId, p.pollutant, activity) }
     }
 
-    fun loadStations(lat: Double? = null, lon: Double? = null) = viewModelScope.launch {
-        stations.value = load { if (lat != null && lon != null) Api.nearby(lat, lon) else Api.locations() }
-    }
+    fun loadStations(lat: Double? = null, lon: Double? = null) =
+        stations.fetch(if (lat != null && lon != null) lat to lon else "all", force = lat != null) {
+            if (lat != null && lon != null) Api.nearby(lat, lon) else Api.locations()
+        }
 
-    fun loadTrends(id: String, days: Int) = viewModelScope.launch {
-        trends.value = Load.Loading
-        trends.value = load { Api.trends(id, days) }
-    }
+    fun loadTrends(id: String, days: Int) = trends.fetch(id to days) { Api.trends(id, days) }
 }
