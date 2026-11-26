@@ -139,7 +139,13 @@ cd apps/android && ./gradlew assembleDebug   # APK in app/build/outputs/apk/debu
 
 # tests
 .venv/bin/python -m pytest tests -q
+cd apps/web && npm test
 ```
+
+### Putting it online
+
+- **API behind a proxy or load balancer:** start it with `uvicorn app.main:app --host 0.0.0.0 --port 8010 --proxy-headers --forwarded-allow-ips=<proxy address>` so it sees each visitor's real address. Without that, the rate limit counts everyone as the one proxy. Set `CORS_ORIGINS` to the website's address.
+- **Android release builds** are shrunk with R8 and signed with your upload key from `apps/android/keystore.properties` (copy `keystore.properties.example`; the file and the key are gitignored). Without it they fall back to the debug key, which is fine for testing but can't be uploaded to Play. Build the Play bundle with `cd apps/android && ./gradlew bundleRelease` (output in `app/build/outputs/bundle/release/`).
 
 ## License and attribution
 

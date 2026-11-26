@@ -19,3 +19,8 @@ apps/web/next-env.d.ts
 ml/artifacts/**/*.parquet
 ml/artifacts/**/*.pt
 .DS_Store
+
+# release signing keys: never commit
+*.jks
+*.keystore
+keystore.properties
